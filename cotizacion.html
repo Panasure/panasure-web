@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Su cotización · Panasure</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#006B4C">
+<link rel="icon" href="https://app.somospanasure.com/favicon-256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="comun.css">
+<style>
+.info{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13px;color:var(--mu)}.info b{color:var(--tx)}
+.seg{display:inline-flex;background:#fff;border:1.5px solid var(--ln);border-radius:12px;padding:3px;margin:0 0 12px}.seg button{border:0;background:none;font:inherit;font-size:13.5px;padding:8px 14px;border-radius:9px;cursor:pointer;color:var(--mu)}.seg button.on{background:var(--v);color:#fff}
+.ops{display:grid;gap:14px}
+.op{background:#fff;border-radius:var(--r);box-shadow:0 10px 30px rgba(0,60,40,.08);overflow:hidden;border-top:5px solid var(--ac,var(--v));position:relative}
+.op.rec{box-shadow:0 0 0 2.5px var(--v2),0 14px 34px rgba(0,60,40,.14)}.rib{position:absolute;right:12px;top:12px;background:var(--v2);color:#fff;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px}
+.oh{padding:16px 16px 10px;display:flex;gap:12px;align-items:center}.lg{width:54px;height:54px;border-radius:14px;background:#F4F7F6;display:grid;place-items:center;overflow:hidden;flex:none;font-weight:800;color:var(--ac,var(--v))}.lg img{max-width:90%;max-height:90%}
+.oh h3{margin:0;font-size:17px}.oh .pl{font-size:13px;color:var(--mu)}
+.pr{padding:0 16px 12px}.pr .big{font-size:30px;font-weight:700;letter-spacing:-.5px}.pr .big small{font-size:14px;font-weight:600;color:var(--mu)}.pr .sub{font-size:13px;color:var(--mu)}
+.badges{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px}.bd{font-size:12px;font-weight:600;padding:5px 9px;border-radius:999px;background:var(--v3);color:var(--v)}.bd.w{background:#FFF4DE;color:#8A5A00}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 12px}.kv div{background:#F7FAF9;border-radius:12px;padding:9px 11px}.kv span{display:block;font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.3px}.kv b{font-size:14px}
+.sec{padding:10px 16px;border-top:1px solid var(--ln)}.sec h4{margin:0 0 6px;font-size:13px;color:var(--mu);text-transform:uppercase;letter-spacing:.3px}
+.bl{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:13.5px}.bl .no{color:#9aa8a1;text-decoration:line-through}
+.sec ul{margin:0;padding-left:18px;font-size:13.5px}.sec li{margin:3px 0}
+.act{padding:12px 16px 16px;display:flex;gap:8px}.act .btn{flex:1}
+table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:var(--r);overflow:hidden}th,td{padding:9px 10px;border-bottom:1px solid var(--ln);text-align:left;vertical-align:top}th{background:#F4F8F6;font-size:12px}thead th{position:sticky;top:0}
+.tw{overflow-x:auto;border-radius:var(--r);box-shadow:0 10px 30px rgba(0,60,40,.08)}
+.modal{position:fixed;inset:0;background:rgba(10,30,20,.5);display:none;align-items:flex-end;justify-content:center;z-index:50}.modal.on{display:flex}
+.sheet{background:#fff;width:100%;max-width:520px;border-radius:22px 22px 0 0;padding:20px;max-height:90vh;overflow:auto}@media(min-width:600px){.modal{align-items:center}.sheet{border-radius:22px}}
+.elegida{background:var(--v3);border:1.5px solid #9fd5bb;border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><div class="brand"><img src="panasure-blanco.png" alt="Panasure"></div>
+<h1 id="hola">Su cotización</h1><p id="sub">Compare las opciones y elija la que más le convenga. Esta página siempre muestra la versión más reciente.</p></div></div>
+<main id="app"><div class="card"><p class="muted">Cargando…</p></div></main>
+<div class="foot"><img src="ssrp.png" alt="SSRP"><div><b>Panasure Corredores de Seguros</b> · Regulado y supervisado por la Superintendencia de Seguros y Reaseguros de Panamá · Licencias PP038-2026 / PP089-2026.<br>Las primas y coberturas son referenciales según cada aseguradora a la fecha; la emisión está sujeta a su aprobación y a las condiciones de la póliza.</div></div>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const API="https://orsnzgfxablytvqpgdcc.supabase.co/functions/v1/publico";
+const T=new URLSearchParams(location.search).get("c")||"";
+let S=null,Q=null,vista="tarjetas";
+const $=s=>document.querySelector(s),esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),3200)}
+async function api(body){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({t:T,...body})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Error "+r.status);return j}
+const pb=h=>esc(h||"").replace(/&lt;(\/?)small&gt;/g,"<$1small>");
+const okImg=u=>/^(data:image\/|https:\/\/)/.test(u||"");
+async function cargar(){if(!T)return error("Este link no es válido.");
+  try{const r=await fetch(API+"?t="+encodeURIComponent(T));const j=await r.json();if(!r.ok)return error(j.error);S=j;Q=j.cotizacion;
+    if(!Q||!(Q.opciones||[]).length)return error("Esta cotización todavía no tiene opciones. Su corredor se la enviará pronto.");
+    $("#hola").textContent=(S.nombre?`Hola ${S.nombre}, `:"")+`su seguro de ${Q.ramo||""}`.trim();
+    if(Q.opciones.length>=4)vista="tabla";render();api({accion:"visto"}).catch(()=>{})}
+  catch(e){error("No pudimos abrir la cotización. Revise su conexión.")}}
+function error(m){$("#app").innerHTML=`<div class="err card"><div style="font-size:42px">📄</div><h2>Cotización no disponible</h2><p class="muted">${esc(m)}</p><a class="btn" href="https://wa.me/50767872717">Escribir a Panasure</a></div>`}
+function card(o,i){const covs=Q.covs||[];
+  return `<div class="op${o.rec?" rec":""}" style="--ac:${esc(o.color||"#006B4C")}">${o.rec?'<span class="rib">⭐ Recomendada</span>':""}
+  <div class="oh"><div class="lg">${okImg(o.logo)?`<img src="${esc(o.logo)}" alt="">`:esc((o.aseguradora||"?").slice(0,2))}</div><div><h3>${esc(o.aseguradora||"Opción "+(i+1))}</h3>${o.plan?`<div class="pl">Plan ${esc(o.plan)}</div>`:""}</div></div>
+  <div class="pr"><div class="big">${o.precioBig?pb(o.precioBig):"Por confirmar"}</div><div class="sub">${esc([o.precioSub,o.precioTot].filter(Boolean).join(" · "))}</div></div>
+  <div class="badges">${o.completa?'<span class="bd">✅ Cobertura completa</span>':""}${o.exoneracion?'<span class="bd">🛡️ Exoneración de deducible</span>':""}${Q.vigencia?`<span class="bd w">Vigencia ${esc(Q.vigencia)}</span>`:""}</div>
+  <div class="kv">${o.sumaAsegurada?`<div><span>Suma asegurada</span><b>${esc(o.sumaAsegurada)}</b></div>`:""}${o.deducible?`<div><span>Deducible</span><b>${esc(o.deducible)}</b></div>`:""}${covs.filter(c=>o.cov&&o.cov[c]).map(c=>`<div><span>${esc(c)}</span><b>${esc(o.cov[c])}</b></div>`).join("")}</div>
+  ${(Q.beneficios||[]).length?`<div class="sec"><h4>Beneficios</h4><div class="bl">${Q.beneficios.map(b=>(o.ben||[]).includes(b)?`<span>✅ ${esc(b)}</span>`:`<span class="no">${esc(b)}</span>`).join("")}${(o.benOtros||[]).map(b=>`<span>✅ ${esc(b)}</span>`).join("")}</div></div>`:""}
+  ${(o.coberturas||[]).length?`<div class="sec"><h4>Coberturas incluidas</h4><ul>${o.coberturas.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+  ${(o.pagos||[]).length?`<div class="sec"><h4>Formas de pago</h4><ul>${o.pagos.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+  ${o.notas?`<div class="sec"><h4>Notas</h4><div style="font-size:13.5px">${esc(o.notas)}</div></div>`:""}
+  ${S.estado!=="elegido"?`<div class="act"><button class="btn" data-elegir="${i}">Elijo esta opción</button></div>`:""}</div>`}
+function tabla(){const O=Q.opciones,covs=Q.covs||[];const row=(l,f)=>`<tr><th>${l}</th>${O.map(f).map(x=>`<td>${x}</td>`).join("")}</tr>`;
+  return `<div class="tw"><table><thead><tr><th></th>${O.map((o,i)=>`<th>${o.rec?"⭐ ":""}${esc(o.aseguradora||"Opción "+(i+1))}${o.plan?`<br><span style="font-weight:500">${esc(o.plan)}</span>`:""}</th>`).join("")}</tr></thead><tbody>
+  ${row("Precio",o=>`<b>${o.precioBig?pb(o.precioBig):"—"}</b><br><span class="muted">${esc(o.precioSub||"")}</span>`)}${row("Cobertura completa",o=>o.completa?"✅":"—")}
+  ${row("Suma asegurada",o=>esc(o.sumaAsegurada||"—"))}${row("Deducible",o=>esc(o.deducible||"—"))}${covs.map(c=>row(esc(c),o=>esc((o.cov||{})[c]||"—"))).join("")}
+  ${(Q.beneficios||[]).map(b=>row(esc(b),o=>(o.ben||[]).includes(b)?"✅":"—")).join("")}
+  ${S.estado!=="elegido"?`<tr><th></th>${O.map((o,i)=>`<td><button class="btn" style="padding:9px 12px;font-size:13px" data-elegir="${i}">Elijo esta</button></td>`).join("")}</tr>`:""}</tbody></table></div>`}
+function render(){const e=S.eleccion;
+  $("#app").innerHTML=`${e?`<div class="elegida"><b>🎉 Usted eligió ${esc(e.aseguradora)}${e.plan?" · "+esc(e.plan):""}</b><div class="muted">Su corredor ya fue avisado y le escribirá para emitir su póliza.</div></div>`:""}
+  <div class="card"><div class="info">${Q.riesgo?`<span>🚗 <b>${esc(Q.riesgo)}</b></span>`:""}${Q.validez?`<span>Válida hasta <b>${esc(Q.validez)}</b></span>`:""}<span>Preparada por <b>${esc(S.corredor||"Panasure")}</b></span></div>${Q.notas?`<p style="margin:10px 0 0;font-size:14px">${esc(Q.notas)}</p>`:""}</div>
+  ${Q.opciones.length>1?`<div class="seg"><button class="${vista==="tarjetas"?"on":""}" data-v="tarjetas">Tarjetas</button><button class="${vista==="tabla"?"on":""}" data-v="tabla">Comparar en tabla</button></div>`:""}
+  ${vista==="tabla"?tabla():`<div class="ops">${Q.opciones.map(card).join("")}</div>`}
+  <div class="card" style="margin-top:14px;text-align:center"><p style="margin:0 0 10px">¿Tiene dudas? Con gusto le explicamos.</p><a class="btn sec" href="https://wa.me/50767872717?text=${encodeURIComponent("Hola, tengo una consulta sobre mi cotización de "+(Q.ramo||"seguro"))}">💬 Preguntar por WhatsApp</a></div>`}
+document.addEventListener("click",e=>{const v=e.target.closest(".seg button");if(v){vista=v.dataset.v;render();return}
+  const b=e.target.closest("[data-elegir]");if(b){const i=+b.dataset.elegir,o=Q.opciones[i];
+    $("#sheet").innerHTML=`<h2 style="margin:0 0 6px">Confirmar su elección</h2><p class="muted" style="margin:0 0 14px"><b>${esc(o.aseguradora)}${o.plan?" · "+esc(o.plan):""}</b> — ${pb(o.precioBig)} ${esc(o.precioSub||"")}</p>
+    <label class="f">¿Cómo prefiere pagar?<select id="pg"><option value="">Lo que me recomienden</option>${(o.pagos||[]).map(p=>`<option>${esc(p)}</option>`).join("")}<option>Un solo pago</option><option>Tarjeta / ACH</option></select></label>
+    <label class="f">Comentario (opcional)<textarea id="cm" rows="2" placeholder="Ej.: quiero que empiece el 26 de noviembre"></textarea></label>
+    <div style="display:flex;gap:8px"><button class="btn sec" style="flex:1" data-cerrar>Cancelar</button><button class="btn" style="flex:2" data-ok="${i}">✅ Confirmar</button></div>`;$("#modal").classList.add("on");return}
+  if(e.target.closest("[data-cerrar]")||e.target.id==="modal"){$("#modal").classList.remove("on");return}
+  const ok=e.target.closest("[data-ok]");if(ok){ok.disabled=true;ok.innerHTML='<span class="spin"></span>';
+    api({accion:"elegir",opcion:+ok.dataset.ok,pagos:$("#pg").value,comentario:$("#cm").value}).then(()=>{$("#modal").classList.remove("on");const o=Q.opciones[+ok.dataset.ok];S.estado="elegido";S.eleccion={aseguradora:o.aseguradora,plan:o.plan};render();window.scrollTo({top:0,behavior:"smooth"});toast("¡Listo! Su corredor ya fue avisado.")}).catch(er=>{ok.disabled=false;ok.textContent="✅ Confirmar";toast(er.message)})}});
+cargar();
+</script>
+</body>
+</html>

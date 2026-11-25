@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Seguro de auto · Panasure</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#006B4C">
+<link rel="icon" href="https://app.somospanasure.com/favicon-256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="comun.css">
+<style>
+.prog{display:flex;gap:6px;margin:0 0 14px}.prog i{flex:1;height:6px;border-radius:6px;background:var(--ln);transition:.3s}.prog i.on{background:var(--v2)}
+.paso h2{font-size:18px;margin:0 0 4px}.paso>.muted{margin:0 0 14px}
+.up{display:flex;align-items:center;gap:12px;border:1.5px dashed var(--ln);border-radius:14px;padding:12px;margin-bottom:10px;cursor:pointer;background:#FBFDFC;position:relative}
+.up.ok{border-style:solid;border-color:#9fd5bb;background:var(--v3)}.up input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.up .ic{width:46px;height:46px;border-radius:12px;background:#fff;border:1px solid var(--ln);display:grid;place-items:center;flex:none;overflow:hidden}.up .ic img{width:100%;height:100%;object-fit:cover}
+.up b{font-size:14px;display:block}.up span{font-size:12px;color:var(--mu)}.up .st{margin-left:auto;font-size:12px;font-weight:700;color:var(--v)}
+.fotos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}@media(max-width:520px){.fotos{grid-template-columns:repeat(2,1fr)}}
+.ft{position:relative;border:1.5px dashed var(--ln);border-radius:14px;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;padding:8px;cursor:pointer;background:#FBFDFC;overflow:hidden}
+.ft input{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2}.ft svg{width:64px;height:44px;color:var(--v)}.ft b{font-size:12.5px}.ft span{font-size:11px;color:var(--mu)}
+.ft.ok{border-style:solid;border-color:#9fd5bb}.ft img.pv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.ft .okb{position:absolute;right:6px;top:6px;z-index:1;background:var(--ok);color:#fff;border-radius:999px;font-size:11px;padding:2px 7px;font-weight:700}
+.nav{display:flex;gap:10px;margin-top:6px}.nav .btn{flex:1}
+.tip{background:var(--v3);border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.res li{margin:4px 0}.done{text-align:center;padding:30px 18px}.done .big{font-size:52px}
+.sv{font-size:12px;color:var(--mu);text-align:right;min-height:16px}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><div class="brand"><img src="panasure-blanco.png" alt="Panasure"></div>
+<h1 id="hola">Seguro de auto · cobertura completa</h1><p id="sub">Complete sus datos y fotos en unos minutos. Puede pausar y seguir después con este mismo link.</p></div></div>
+<main id="app"><div class="card"><p class="muted">Cargando…</p></div></main>
+<div class="foot"><img src="ssrp.png" alt="SSRP"><div><b>Panasure Corredores de Seguros</b> · Regulado y supervisado por la Superintendencia de Seguros y Reaseguros de Panamá · Licencias PP038-2026 / PP089-2026.<br>Sus datos se usan solo para cotizar y emitir su póliza, y se guardan de forma segura.</div></div>
+<div class="toast" id="toast"></div>
+<script>
+const API="https://orsnzgfxablytvqpgdcc.supabase.co/functions/v1/publico";
+const T=new URLSearchParams(location.search).get("c")||"";
+let S=null,paso=0,D={},A={},guardando=false;
+const $=s=>document.querySelector(s),esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("on"),3200)}
+async function api(body){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({t:T,...body})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"Error "+r.status);return j}
+const PASOS=["Seguro actual","Su auto","Sus datos","Fotos del auto","Preferencias"];
+const SVG={frente:'<rect x="10" y="14" width="44" height="20" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="18" cy="24" r="3" fill="currentColor"/><circle cx="46" cy="24" r="3" fill="currentColor"/><rect x="26" y="22" width="12" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>',
+ atras:'<rect x="10" y="14" width="44" height="20" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="14" y="20" width="7" height="5" rx="1" fill="currentColor"/><rect x="43" y="20" width="7" height="5" rx="1" fill="currentColor"/><rect x="27" y="26" width="10" height="4" fill="none" stroke="currentColor" stroke-width="2"/>',
+ izquierda:'<path d="M6 30h52v-6l-8-2-8-8H22l-8 8-8 2z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="18" cy="31" r="5" fill="#fff" stroke="currentColor" stroke-width="2.5"/><circle cx="46" cy="31" r="5" fill="#fff" stroke="currentColor" stroke-width="2.5"/>',
+ derecha:'<path d="M58 30H6v-6l8-2 8-8h20l8 8 8 2z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><circle cx="18" cy="31" r="5" fill="#fff" stroke="currentColor" stroke-width="2.5"/><circle cx="46" cy="31" r="5" fill="#fff" stroke="currentColor" stroke-width="2.5"/>',
+ odometro:'<path d="M12 34a20 20 0 1 1 40 0" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M32 34l10-12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><rect x="24" y="36" width="16" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>',
+ vin:'<rect x="6" y="16" width="52" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><text x="32" y="28" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" font-family="monospace">VIN 1HG…</text>',
+ interior:'<rect x="10" y="10" width="44" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="26" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="36" y="18" width="12" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>'};
+const FOTOS=[["frente","Frente","Todo el frente y la placa"],["atras","Atrás","Toda la parte trasera"],["izquierda","Lado izquierdo","El auto completo de lado"],["derecha","Lado derecho","El auto completo de lado"],["odometro","Odómetro","Con el auto encendido"],["vin","VIN / chasis","Placa del VIN (parabrisas o puerta)"],["interior","Interior (opcional)","Asientos y tablero"]];
+
+async function cargar(){
+  if(!T){return error("Este link no es válido. Pídale uno nuevo a su corredor por WhatsApp.")}
+  try{const r=await fetch(API+"?t="+encodeURIComponent(T));const j=await r.json();if(!r.ok)return error(j.error);S=j;D={...(j.datos||{})};A=j.archivos||{};
+    if(S.tipo!=="auto")return error("Este link no corresponde a un formulario de auto.");
+    if(S.nombre)$("#hola").textContent=`Hola ${S.nombre} 👋`;
+    if(S.estado!=="abierto")return fin(true);
+    paso=Math.min(+(D.paso||0),4);render();api({accion:"visto"}).catch(()=>{})
+  }catch(e){error("No pudimos abrir el formulario. Revise su conexión e intente de nuevo.")}}
+function error(m){$("#app").innerHTML=`<div class="err card"><div style="font-size:42px">🔗</div><h2>Link no disponible</h2><p class="muted">${esc(m)}</p><a class="btn" href="https://wa.me/50767872717">Escribir a Panasure por WhatsApp</a></div>`}
+const ch=(k,opts)=>`<div class="chips" data-k="${k}">${opts.map(([v,l])=>`<button type="button" class="chip${String(D[k]??"")===v?" on":""}" data-v="${esc(v)}">${l}</button>`).join("")}</div>`;
+const inp=(k,l,o={})=>`<label class="f">${l}<input name="${k}" value="${esc(D[k]??"")}" ${o.type?`type="${o.type}"`:""} ${o.ph?`placeholder="${esc(o.ph)}"`:""} ${o.im?`inputmode="${o.im}"`:""} autocomplete="${o.ac||"off"}"></label>`;
+const up=(k,l,d,acc="image/*,application/pdf")=>`<label class="up${A[k]?" ok":""}" data-up="${k}"><input type="file" accept="${acc}" data-file="${k}"><span class="ic">${A[k]?"✅":"📎"}</span><span><b>${l}</b><span>${A[k]?"Recibido · toque para cambiar":d}</span></span><span class="st"></span></label>`;
+function render(){
+  const P=[
+  ()=>`<h2>1. Su seguro actual</h2><p class="muted">Así comparamos y evitamos que quede sin cobertura.</p>
+    ${ch("estadoSeguro",[["vigente","Vigente"],["porVencer","Por vencer"],["vencido","Vencido"],["ninguno","No tengo seguro"]])}
+    ${D.estadoSeguro&&D.estadoSeguro!=="ninguno"?`<div class="g2">${inp("aseguradoraActual","Aseguradora actual",{ph:"Ej.: Regional, ASSA…"})}${inp("vencimiento","¿Cuándo vence?",{type:"date"})}</div>${up("polizaActual","Foto o PDF de su póliza actual","Nos ayuda a comparar coberturas")}`:""}`,
+  ()=>`<h2>2. Su auto</h2><p class="muted">La foto del registro nos da casi todos los datos.</p>${up("registro","Registro vehicular (foto o PDF)","Ambos lados si los tiene")}
+    <div class="g2">${inp("marca","Marca",{ph:"Ej.: Changan"})}${inp("modelo","Modelo",{ph:"Ej.: CS35 Plus"})}${inp("anio","Año",{im:"numeric",ph:"2026"})}${inp("placa","Placa")}${inp("color","Color")}${inp("valor","Valor aproximado (B/.)",{im:"decimal",ph:"Ej.: 18,500"})}</div>
+    <label class="f">Uso del auto</label>${ch("uso",[["particular","Particular"],["trabajo","Trabajo"],["plataforma","Uber / plataforma"],["comercial","Comercial"]])}
+    <label class="f">¿Está financiado?</label>${ch("financiado",[["no","No"],["si","Sí, con banco"]])}${D.financiado==="si"?inp("banco","Banco o financiera",{ph:"Ej.: Banco General"}):""}`,
+  ()=>`<h2>3. Sus datos</h2><p class="muted">Los pide la aseguradora para emitir la póliza.</p>${up("cedula","Cédula (foto de frente)","Debe verse completa y legible","image/*,application/pdf")}${up("licencia","Licencia de conducir","Vigente","image/*,application/pdf")}
+    <div class="g2">${inp("nombre","Nombre completo",{ac:"name"})}${inp("cedula","Número de cédula",{ph:"8-123-456"})}${inp("fechaNac","Fecha de nacimiento",{type:"date"})}${inp("email","Correo",{type:"email",ac:"email"})}</div>
+    ${inp("direccion","Dirección residencial",{ph:"Barriada, calle, edificio, apto",ac:"street-address"})}
+    <div class="g2">${inp("provincia","Provincia",{ph:"Panamá"})}${inp("distrito","Distrito",{ph:"Panamá"})}${inp("corregimiento","Corregimiento",{ph:"Río Abajo"})}${inp("lugarTrabajo","Lugar de trabajo")}${inp("profesion","Profesión",{ph:"Ej.: Contadora"})}${inp("ocupacion","Ocupación",{ph:"Ej.: Analista financiera"})}</div>
+    <label class="f">¿Es usted o un familiar cercano una persona políticamente expuesta (PEP)?</label>${ch("pep",[["no","No"],["si","Sí"]])}${D.pep==="si"?inp("pepDetalle","Cargo o relación"):""}
+    <h3 style="font-size:15px;margin:10px 0 6px">Dos referencias personales</h3>
+    <div class="g2">${inp("ref1Nombre","Referencia 1 · nombre")}${inp("ref1Tel","Celular",{type:"tel",im:"tel"})}</div>${inp("ref1Par","Parentesco",{ph:"Ej.: hermano"})}
+    <div class="g2">${inp("ref2Nombre","Referencia 2 · nombre")}${inp("ref2Tel","Celular",{type:"tel",im:"tel"})}</div>${inp("ref2Par","Parentesco",{ph:"Ej.: amiga"})}`,
+  ()=>`<h2>4. Fotos de inspección</h2><p class="muted">La aseguradora las pide para emitir. Tómelas de día, con el auto limpio y completo en la foto.</p>
+    <div class="tip">💡 Si ahora no está cerca del auto, puede seguir después con este mismo link. Lo que suba queda guardado.</div>
+    <div class="fotos">${FOTOS.map(([k,l,d])=>`<label class="ft${A[k]?" ok":""}" data-up="${k}"><input type="file" accept="image/*" capture="environment" data-file="${k}">${A[k]&&A[k].pv?`<img class="pv" src="${A[k].pv}">`:""}${A[k]?'<span class="okb">✓</span>':""}<svg viewBox="0 0 64 48">${SVG[k]}</svg><b>${l}</b><span>${A[k]?"Recibida":d}</span></label>`).join("")}</div>`,
+  ()=>`<h2>5. Lo que más le importa</h2><p class="muted">Así le recomendamos la mejor opción para usted.</p>
+    <label class="f">Prefiero…</label>${ch("prioridad",[["prima","Pagar menos al mes"],["deducible","Deducible bajo"],["equilibrio","Un equilibrio"]])}
+    <label class="f">Beneficios que quiere (puede elegir varios)</label><div class="chips" data-multi="beneficios">${["Asistencia legal","Auto de reemplazo","Grúa","Asistencia vial","Exoneración de deducible","Cobertura en Costa Rica"].map(b=>`<button type="button" class="chip${(D.beneficios||[]).includes(b)?" on":""}" data-v="${esc(b)}">${b}</button>`).join("")}</div>
+    <label class="f">¿Cómo prefiere pagar?</label>${ch("pagos",[["contado","Un solo pago"],["10","10 pagos"],["12","12 pagos"],["tarjeta","Con tarjeta / ACH"]])}
+    <label class="f">¿Algo más que debamos saber?<textarea name="comentarios" rows="3" placeholder="Ej.: tuve un choque este año, quiero cobertura en Costa Rica…">${esc(D.comentarios||"")}</textarea></label>`];
+  $("#app").innerHTML=`<div class="card paso"><div class="prog">${PASOS.map((_,i)=>`<i class="${i<=paso?"on":""}"></i>`).join("")}</div>
+    <div class="muted" style="margin-bottom:8px">Paso ${paso+1} de ${PASOS.length} · ${PASOS[paso]}</div>${P[paso]()}
+    <div class="sv" id="sv"></div><div class="nav">${paso?'<button class="btn sec" data-nav="-1">‹ Atrás</button>':""}<button class="btn" data-nav="1">${paso<4?"Guardar y seguir ›":"✅ Enviar a Panasure"}</button></div></div>`;
+}
+function leerCampos(){document.querySelectorAll("#app input[name],#app textarea[name]").forEach(i=>{D[i.name]=i.value.trim()})}
+async function guardar(){leerCampos();D.paso=paso;$("#sv").textContent="Guardando…";const r=await api({accion:"guardar",datos:D});$("#sv").textContent="✓ Guardado";return r}
+document.addEventListener("click",async e=>{
+  const c=e.target.closest(".chips[data-k] .chip");if(c){leerCampos();const k=c.parentElement.dataset.k;D[k]=c.dataset.v;render();return}
+  const m=e.target.closest(".chips[data-multi] .chip");if(m){leerCampos();const k=m.parentElement.dataset.multi,v=m.dataset.v,L=new Set(D[k]||[]);L.has(v)?L.delete(v):L.add(v);D[k]=[...L];render();return}
+  const n=e.target.closest("[data-nav]");if(!n||guardando)return;const dir=+n.dataset.nav;
+  guardando=true;n.disabled=true;
+  try{await guardar();
+    if(dir>0&&paso===4){n.innerHTML='<span class="spin"></span> Enviando…';const r=await api({accion:"enviar"});return fin(false,r.avance)}
+    paso=Math.max(0,Math.min(4,paso+dir));render();window.scrollTo({top:0,behavior:"smooth"})}
+  catch(er){toast("No se pudo guardar: "+er.message)}finally{guardando=false}});
+async function achicar(f){if(!/^image\//.test(f.type)||f.type==="image/gif")return f;
+  const bmp=await createImageBitmap(f).catch(()=>null);if(!bmp)return f;const k=Math.min(1,1800/Math.max(bmp.width,bmp.height));
+  const c=document.createElement("canvas");c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);
+  return await new Promise(r=>c.toBlob(b=>r(b||f),"image/jpeg",.82))}
+const b64=b=>new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(String(x.result).split(",")[1]);x.onerror=j;x.readAsDataURL(b)});
+document.addEventListener("change",async e=>{const i=e.target.closest("input[data-file]");if(!i||!i.files[0])return;const k=i.dataset.file,box=i.closest("[data-up]"),st=box.querySelector(".st")||box.querySelector("span:last-child");
+  try{if(st)st.textContent="Subiendo…";box.style.opacity=.6;leerCampos();
+    const f=await achicar(i.files[0]);if(f.size>10*1024*1024)throw new Error("El archivo pesa más de 10 MB");
+    const mime=/pdf/.test(f.type||i.files[0].type)?"application/pdf":(f.type||"image/jpeg");
+    const r=await api({accion:"subir",campo:k,mime,b64:await b64(f)});
+    A[k]={nombre:k,pv:mime!=="application/pdf"?URL.createObjectURL(f):""};render();toast("✓ Recibido");void r}
+  catch(er){box.style.opacity=1;if(st)st.textContent="";toast("No se pudo subir: "+er.message)}});
+function fin(ya,av){const falt=av&&av.faltan&&av.faltan.length?av.faltan:[];
+  $("#app").innerHTML=`<div class="card done"><div class="big">🎉</div><h2>${ya?"Ya recibimos sus datos":"¡Listo! Recibimos todo"}</h2>
+  <p class="muted">${ya?"Este formulario ya fue enviado. Si necesita cambiar algo, escríbanos.":"Su corredor ya está preparando sus opciones. Le escribiremos por WhatsApp muy pronto."}</p>
+  ${falt.length?`<div class="tip" style="text-align:left">Todavía falta: <b>${falt.map(esc).join(", ")}</b>. Puede enviarlo por WhatsApp cuando lo tenga.</div>`:""}
+  <a class="btn" href="https://wa.me/50767872717">Volver a WhatsApp</a></div>`}
+cargar();
+</script>
+</body>
+</html>
