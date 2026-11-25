@@ -24,6 +24,9 @@
 .tip{background:var(--v3);border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
 .res li{margin:4px 0}.done{text-align:center;padding:30px 18px}.done .big{font-size:52px}
 .sv{font-size:12px;color:var(--mu);text-align:right;min-height:16px}
+.ft{aspect-ratio:auto;justify-content:flex-start;padding:10px}.ft img.ilu{width:100%;max-width:150px;border-radius:10px;margin-bottom:4px}.ft span{line-height:1.35}
+.reglas{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.reglas span{background:var(--v3);border-radius:12px;padding:8px 10px;font-size:12px;line-height:1.35}
+.ft img.pv{position:static;width:100%;max-width:150px;aspect-ratio:1/1;object-fit:cover;border-radius:10px;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -47,7 +50,7 @@ const SVG={frente:'<rect x="10" y="14" width="44" height="20" rx="6" fill="none"
  odometro:'<path d="M12 34a20 20 0 1 1 40 0" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M32 34l10-12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><rect x="24" y="36" width="16" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="2"/>',
  vin:'<rect x="6" y="16" width="52" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><text x="32" y="28" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" font-family="monospace">VIN 1HG…</text>',
  interior:'<rect x="10" y="10" width="44" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="26" r="7" fill="none" stroke="currentColor" stroke-width="2.5"/><rect x="36" y="18" width="12" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>'};
-const FOTOS=[["frente","Frente","Todo el frente y la placa"],["atras","Atrás","Toda la parte trasera"],["izquierda","Lado izquierdo","El auto completo de lado"],["derecha","Lado derecho","El auto completo de lado"],["odometro","Odómetro","Con el auto encendido"],["vin","VIN / chasis","Placa del VIN (parabrisas o puerta)"],["interior","Interior (opcional)","Asientos y tablero"]];
+const FOTOS=[["frente","1. Parte frontal","De frente, a unos 3 m. Faros, parachoques y placa completos."],["atras","2. Parte trasera","Desde atrás, a unos 3 m. Luces, parachoques y placa."],["izquierda","3. Lateral izquierdo","Lado del conductor, el auto completo de punta a punta."],["derecha","4. Lateral derecho","Lado del pasajero, el auto completo de punta a punta."],["motor","5. Motor","Capó abierto, desde arriba y con buena luz."],["odometro","6. Tablero","Auto encendido; que se lea el kilometraje."],["vin","7. VIN o chasis","Que se lean los 17 caracteres. Suele estar en la base del parabrisas o en el marco de la puerta."]];
 
 async function cargar(){
   if(!T){return error("Este link no es válido. Pídale uno nuevo a su corredor por WhatsApp.")}
@@ -72,10 +75,10 @@ function armar(){const P=S.pedir||["fotos","cedula","licencia","registro","poliz
     <h3 style="font-size:15px;margin:10px 0 6px">Dos referencias personales</h3>
     <div class="g2">${inp("ref1Nombre","Referencia 1 · nombre")}${inp("ref1Tel","Celular",{type:"tel",im:"tel"})}</div>${inp("ref1Par","Parentesco",{ph:"Ej.: hermano"})}
     <div class="g2">${inp("ref2Nombre","Referencia 2 · nombre")}${inp("ref2Tel","Celular",{type:"tel",im:"tel"})}</div>${inp("ref2Par","Parentesco",{ph:"Ej.: amiga"})}`]);
-  if(P.includes("fotos"))STEPS.push(["Fotos del auto",()=>`<h2>📸 Fotos de su auto${esc(veh)}</h2><p class="muted">La aseguradora las pide para emitir su <b>cobertura completa</b>. Toque cada recuadro y tome la foto.</p>
-    <div class="tip"><b>Cómo tomarlas:</b><br>☀️ De día o con buena luz · 🚗 El auto completo en la foto · 🧽 Sin lodo que tape la placa o golpes · 📏 A unos 2–3 metros (las de lado, en diagonal si no cabe)</div>
+  if(P.includes("fotos"))STEPS.push(["Fotos del auto",()=>`<h2>📸 Fotos de su vehículo para la inspección${esc(veh)}</h2><p class="muted">Para emitir su póliza de <b>cobertura completa</b>, la aseguradora necesita ver el estado actual de su auto. Toque cada recuadro y tome la foto (son 7).</p>
+    <div class="reglas"><span>☀️ <b>De día</b><br>Luz natural, sin sombras fuertes</span><span>🧽 <b>Auto limpio</b><br>Que se vea bien la pintura</span><span>🔍 <b>Nítidas</b><br>Sin filtros, sin zoom, sin movimiento</span><span>📅 <b>Recientes</b><br>Tomadas hoy</span></div>
     <div class="tip">💡 Si ahora no está cerca del auto, puede seguir después con este mismo link. Lo que suba queda guardado.</div>
-    <div class="fotos">${FOTOS.map(([k,l,d])=>`<label class="ft${A[k]?" ok":""}" data-up="${k}"><input type="file" accept="image/*" capture="environment" data-file="${k}">${A[k]&&A[k].pv?`<img class="pv" src="${A[k].pv}">`:""}${A[k]?'<span class="okb">✓</span>':""}<svg viewBox="0 0 64 48">${SVG[k]}</svg><b>${l}</b><span>${A[k]?"Recibida":d}</span></label>`).join("")}</div>`]);
+    <div class="fotos">${FOTOS.map(([k,l,d])=>`<label class="ft${A[k]?" ok":""}" data-up="${k}"><input type="file" accept="image/*" capture="environment" data-file="${k}">${A[k]?'<span class="okb">✓</span>':""}${A[k]&&A[k].pv?`<img class="pv" src="${A[k].pv}" alt="">`:`<img class="ilu" src="insp-${k}.png" alt="">`}<b>${l}</b><span>${A[k]?"✓ Recibida · toque para cambiarla":d}</span></label>`).join("")}</div>`]);
   if(!STEPS.length)STEPS.push(["Listo",()=>`<h2>Todo listo</h2><p class="muted">Ya tenemos lo necesario.</p>`]);
   PASOS=STEPS.map(x=>x[0]);
   if(STEPS.length===1&&P.includes("fotos")){$("#sub").textContent="¡Ya casi! Para emitir su póliza solo faltan las fotos de su auto. Toma unos 3 minutos y puede pausar cuando quiera."}
