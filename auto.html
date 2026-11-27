@@ -20,7 +20,7 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#006B4C">
 <link rel="icon" href="https://app.somospanasure.com/favicon-256.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="comun.css">
 <style>
 .prog{display:flex;gap:6px;margin:0 0 14px}.prog i{flex:1;height:6px;border-radius:6px;background:var(--ln);transition:.3s}.prog i.on{background:var(--v2)}
@@ -46,11 +46,55 @@
 .reglas{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.reglas span{background:var(--v3);border-radius:12px;padding:8px 10px;font-size:12px;line-height:1.35}
 .ft img.pv{position:static;width:100%;max-width:150px;aspect-ratio:1/1;object-fit:cover;border-radius:10px;margin-bottom:4px}
 .refb{border:1.5px solid var(--ln);border-radius:14px;padding:12px 12px 0;margin-bottom:10px}.refb>b{display:block;font-size:13.5px;margin-bottom:8px}
+
+/* ===== Estilo de la web somospanasure.com ===== */
+:root{--v:#005C40;--v2:#0B8A63;--v3:#E6F5EE;--mint:#EAF7F1;--tx:#0F2A1F;--mu:#5A6E65;--ln:#DCE8E2;--bg:#F2F7F4;--r:24px}
+body{font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg)}
+.top{background:radial-gradient(120% 140% at 85% -10%,#18A877 0%,rgba(24,168,119,0) 45%),linear-gradient(160deg,#003D2B 0%,#005C40 55%,#0B8A63 100%);padding:20px 18px 92px}
+.top::after{right:-90px;top:-90px;width:300px;height:300px;border:38px solid rgba(255,255,255,.07)}
+.top::before{content:"";position:absolute;left:-70px;bottom:-120px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.05)}
+.brand img{height:30px}
+.top h1{font-size:30px;font-weight:800;letter-spacing:-.6px;margin:22px 0 8px;line-height:1.12}
+.top h1 u{text-decoration:none;background:linear-gradient(transparent 70%,rgba(255,255,255,.28) 70%)}
+.top p{font-size:14.5px;line-height:1.55;opacity:.92;max-width:560px}
+.pill{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 12px;font-size:11.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-top:18px;backdrop-filter:blur(6px)}
+main{margin-top:-70px;max-width:720px}.top .in{max-width:720px;padding:0 16px}@media(max-width:520px){.top .in{padding:0}}
+.card{border-radius:var(--r);box-shadow:0 24px 60px -20px rgba(0,50,34,.28),0 2px 6px rgba(0,50,34,.05);padding:22px 20px;border:1px solid rgba(0,92,64,.06)}
+.steps{display:flex;gap:6px;margin:0 0 18px;overflow-x:auto;scrollbar-width:none}
+.stp{flex:0 0 auto;min-width:0;display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:999px;background:#F2F6F4;font-size:12.5px;font-weight:700;color:#7C8D85;white-space:nowrap;transition:.3s}
+.stp em{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:11.5px;background:#fff;color:#7C8D85;border:1.5px solid #D5E1DB}
+.stp.on{flex:1;background:var(--v);color:#fff;box-shadow:0 6px 16px -6px rgba(0,92,64,.55)}.stp.on em{background:#fff;color:var(--v);border-color:#fff}
+.stp.done{background:var(--mint);color:var(--v)}.stp.done em{background:var(--v2);color:#fff;border-color:var(--v2)}
+.paso{animation:entra .35s cubic-bezier(.2,.8,.2,1)}@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.paso h2{font-size:22px;font-weight:800;letter-spacing:-.4px;margin:0 0 6px;line-height:1.2}.paso>.muted{font-size:14px;margin:0 0 18px;line-height:1.5}
+.paso h3{font-weight:800!important;letter-spacing:-.2px}
+label.f{font-size:13px;font-weight:700;color:#2F4A3E;gap:6px;margin-bottom:14px}
+input,select,textarea{border-radius:14px;padding:13px 14px;border:1.5px solid var(--ln);background:#FBFDFC;transition:border .15s,box-shadow .15s,background .15s}
+input:focus,select:focus,textarea:focus{background:#fff;border-color:var(--v2);box-shadow:0 0 0 4px rgba(11,138,99,.14)}
+input::placeholder{color:#A3B2AB}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23005C40' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+.chip{padding:10px 18px;font-weight:600;transition:.15s}.chip:active{transform:scale(.96)}.chip.on{box-shadow:0 6px 14px -6px rgba(0,92,64,.6)}
+.btn{border-radius:999px;padding:15px 22px;font-weight:800;font-size:15.5px;box-shadow:0 10px 22px -10px rgba(0,92,64,.7);transition:transform .12s,box-shadow .2s}
+.btn:active{transform:scale(.97)}.btn.sec{box-shadow:none;border-color:#D5E1DB;flex:0 0 auto!important;padding:15px 18px}
+.nav{position:sticky;bottom:0;margin:10px -20px -22px;padding:14px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(rgba(255,255,255,0),#fff 28%);border-radius:0 0 var(--r) var(--r);z-index:5}
+.sv{font-weight:600}
+.up{border-radius:18px;padding:14px;border:1.5px dashed #C8DAD1;background:#FAFDFB;transition:.2s}.up:hover{border-color:var(--v2);background:var(--mint)}
+.up .ic{width:50px;height:50px;border-radius:14px;background:var(--mint);border:0;font-size:22px}
+.up.ok{background:var(--mint);border:1.5px solid #9FD5BB}
+.ft{border-radius:18px;border:1.5px dashed #C8DAD1;background:#FAFDFB;transition:.2s}.ft:hover{border-color:var(--v2);transform:translateY(-2px);box-shadow:0 10px 22px -14px rgba(0,92,64,.5)}
+.ft.ok{border:1.5px solid #9FD5BB;background:var(--mint)}.ft b{font-weight:800}
+.ft img.ilu{border-radius:12px}
+.reglas span{background:var(--mint);border-radius:14px;padding:10px 12px}
+.tip{border-radius:14px;background:#FFF8E8;border:1px solid #F3E2B8}
+.refb{border-radius:18px;padding:14px 14px 2px;background:#FAFDFB}
+.fprog{display:flex;align-items:center;gap:10px;margin:-6px 0 14px;font-size:13px;font-weight:700;color:var(--v)}.fprog i{flex:1;height:8px;border-radius:9px;background:#E3EEE8;overflow:hidden}.fprog i u{display:block;height:100%;background:linear-gradient(90deg,#0B8A63,#18A877);border-radius:9px;transition:width .4s}
+.foot{border-top:0}
+@media(max-width:520px){.top{padding:16px 18px 84px}.top h1{font-size:25px;margin-top:16px}.top p{font-size:13.5px}.pill{margin-top:14px}.paso h2{font-size:19px}.card{padding:20px 16px}.nav{margin:10px -16px -20px;padding-left:16px;padding-right:16px}.stp span{display:none}.stp.on span{display:inline}}
 </style>
 </head>
 <body>
 <div class="top"><div class="in"><div class="brand"><img src="panasure-blanco.png" alt="Panasure"></div>
-<h1 id="hola">Emisión de su póliza de auto</h1><p id="sub">Complete sus datos y fotos en unos minutos. Puede pausar y seguir después con este mismo link.</p></div></div>
+<div class="pill">🔒 Emisión segura · Panasure</div><h1 id="hola">Emisión de su póliza de auto</h1><p id="sub">Complete sus datos y fotos en unos minutos. Puede pausar y seguir después con este mismo link.</p></div></div>
 <main id="app"><div class="card"><p class="muted">Cargando…</p></div></main>
 <div class="foot"><img src="ssrp.png" alt="SSRP"><div><b>Panasure Corredores de Seguros</b> · Regulado y supervisado por la Superintendencia de Seguros y Reaseguros de Panamá · Licencias PP038-2026 / PP089-2026.<br>Sus datos se usan solo para cotizar y emitir su póliza, y se guardan de forma segura.</div></div>
 <div class="toast" id="toast"></div>
@@ -75,7 +119,7 @@ async function cargar(){
   if(!T){return error("Este link no es válido. Pídale uno nuevo a su corredor por WhatsApp.")}
   try{const r=await fetch(API+"?t="+encodeURIComponent(T));const j=await r.json();if(!r.ok)return error(j.error);S=j;D={...(j.datos||{})};A=j.archivos||{};
     if(S.tipo!=="auto")return error("Este link no corresponde a un formulario de auto.");
-    if(S.nombre)$("#hola").textContent=`Hola ${S.nombre} 👋`;
+    if(S.nombre)$("#hola").innerHTML=`Hola <u>${esc(S.nombre)}</u>, ya casi<br>tiene su póliza.`;
     if(S.estado!=="abierto")return fin(true);
     armar();paso=Math.min(+(D.paso||0),STEPS.length-1);render();api({accion:"visto"}).catch(()=>{})
   }catch(e){error("No pudimos abrir el formulario. Revise su conexión e intente de nuevo.")}}
@@ -115,11 +159,12 @@ function armar(){const P=S.pedir||["fotos","cedula","licencia","registro","poliz
     <label class="f vinw">Escriba también el VIN <span class="muted" style="font-weight:500">(opcional, nos ayuda a verificarlo)</span><input name="chasis" value="${esc(D.chasis||"")}" maxlength="20" placeholder="Ej.: 1HGCM82633A004352" autocomplete="off" autocapitalize="characters" spellcheck="false" data-vin><small id="vinCnt" class="muted"></small></label>`]);
   if(!STEPS.length)STEPS.push(["Listo",()=>`<h2>Todo listo</h2><p class="muted">Ya tenemos lo necesario.</p>`]);
   PASOS=STEPS.map(x=>x[0]);
-  if(STEPS.length===1&&P.includes("fotos")){$("#sub").textContent="¡Ya casi! Para emitir su póliza solo faltan las fotos de su auto. Toma unos 3 minutos y puede pausar cuando quiera."}
-  else $("#sub").textContent=`¡Ya casi! Para emitir su póliza solo nos falta: ${PASOS.join(", ").toLowerCase()}. Puede pausar y seguir después con este mismo link.`}
-function render(){const last=STEPS.length-1;
-  $("#app").innerHTML=`<div class="card paso">${STEPS.length>1?`<div class="prog">${PASOS.map((_,i)=>`<i class="${i<=paso?"on":""}"></i>`).join("")}</div><div class="muted" style="margin-bottom:8px">Paso ${paso+1} de ${PASOS.length} · ${PASOS[paso]}</div>`:""}${STEPS[paso][1]()}
-    <div class="sv" id="sv"></div><div class="nav">${paso?'<button class="btn sec" data-nav="-1">‹ Atrás</button>':""}<button class="btn" data-nav="1">${paso<last?"Guardar y seguir ›":"✅ Enviar a Panasure"}</button></div></div>`;;vinCheck(document.querySelector("[data-vin]"))
+  if(STEPS.length===1&&P.includes("fotos")){$("#sub").textContent="Solo faltan las fotos de su auto. Toma unos 3 minutos y puede pausar cuando quiera."}
+  else $("#sub").textContent=`Solo nos falta: ${PASOS.join(", ").toLowerCase().replace(/, ([^,]*)$/," y $1")}. Puede pausar y seguir después con este mismo link.`}
+function render(){const last=STEPS.length-1;const nf=FOTOS.filter(([k])=>A[k]).length;
+  $("#app").innerHTML=`<div class="card paso">${STEPS.length>1?`<div class="steps">${PASOS.map((p,i)=>`<div class="stp ${i<paso?"done":i===paso?"on":""}"><em>${i<paso?"✓":i+1}</em><span>${esc(p.replace(" para emitir","").replace(" del auto",""))}</span></div>`).join("")}</div>`:""}
+    ${PASOS[paso]==="Fotos del auto"?`<div class="fprog"><span>📸 ${nf} de ${FOTOS.length} fotos</span><i><u style="width:${Math.round(nf/FOTOS.length*100)}%"></u></i></div>`:""}${STEPS[paso][1]()}
+    <div class="nav">${paso?'<button class="btn sec" data-nav="-1">‹</button>':""}<button class="btn" data-nav="1" style="flex:1">${paso<last?"Guardar y seguir →":"✅ Enviar a Panasure"}</button></div><div class="sv" id="sv"></div></div>`;vinCheck(document.querySelector("[data-vin]"))
 }
 document.addEventListener("input",e=>{const i=e.target.closest("[data-vin]");if(!i)return;const p=i.selectionStart;i.value=i.value.toUpperCase().replace(/[^A-Z0-9]/g,"");try{i.setSelectionRange(p,p)}catch(_){}vinCheck(i)});
 function vinCheck(i){const c=document.getElementById("vinCnt");if(!c||!i)return;const v=i.value,n=v.length;
