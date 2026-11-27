@@ -64,6 +64,7 @@ async function cargar(){
 function error(m){$("#app").innerHTML=`<div class="err card"><div style="font-size:42px">🔗</div><h2>Link no disponible</h2><p class="muted">${esc(m)}</p><a class="btn" href="https://wa.me/50767872717">Escribir a Panasure por WhatsApp</a></div>`}
 const ch=(k,opts)=>`<div class="chips" data-k="${k}">${opts.map(([v,l])=>`<button type="button" class="chip${String(D[k]??"")===v?" on":""}" data-v="${esc(v)}">${l}</button>`).join("")}</div>`;
 const inp=(k,l,o={})=>`<label class="f">${l}<input name="${k}" value="${esc(D[k]??"")}" ${o.type?`type="${o.type}"`:""} ${o.ph?`placeholder="${esc(o.ph)}"`:""} ${o.im?`inputmode="${o.im}"`:""} autocomplete="${o.ac||"off"}"></label>`;
+const sel=(k,l,opts)=>`<label class="f">${l}<select name="${k}" data-re><option value="">Seleccione…</option>${opts.map(o=>{const[v,t]=Array.isArray(o)?o:[o,o];return `<option value="${esc(v)}"${String(D[k]??"")===v?" selected":""}>${esc(t)}</option>`}).join("")}</select></label>`;
 const up=(k,l,d,acc="image/*,application/pdf")=>`<label class="up${A[k]?" ok":""}" data-up="${k}"><input type="file" accept="${acc}" data-file="${k}"><span class="ic">${A[k]?"✅":"📎"}</span><span><b>${l}</b><span>${A[k]?"Recibido · toque para cambiar":d}</span></span><span class="st"></span></label>`;
 function armar(){const P=S.pedir||["fotos","cedula","licencia","registro","polizaActual","datos"],docs=["polizaActual","registro","cedula","licencia"].filter(k=>P.includes(k));
   const veh=S.vehiculo?` (${S.vehiculo})`:"";
@@ -74,8 +75,8 @@ function armar(){const P=S.pedir||["fotos","cedula","licencia","registro","poliz
     <div class="g2">${inp("provincia","Provincia",{ph:"Panamá"})}${inp("distrito","Distrito",{ph:"Panamá"})}${inp("corregimiento","Corregimiento")}${inp("lugarTrabajo","Lugar de trabajo")}${inp("profesion","Profesión")}${inp("ocupacion","Ocupación")}</div>
     <label class="f">¿Es usted o un familiar cercano una persona políticamente expuesta (PEP)?</label>${ch("pep",[["no","No"],["si","Sí"]])}${D.pep==="si"?inp("pepDetalle","Cargo o relación"):""}
     <h3 style="font-size:15px;margin:16px 0 4px">💼 Ingreso anual</h3><p class="muted" style="margin:0 0 6px;font-size:13px">Lo exige la aseguradora (Superintendencia). Es confidencial.</p>
-    <label class="f">Actividad principal${D.ocupacion||D.profesion?` <span class="muted" style="font-weight:500">(${esc(D.ocupacion||D.profesion)})</span>`:""}</label>${ch("ingresoPrincipal",[["Menos de B/. 10,000","Menos de B/. 10,000"],["B/. 10,000 – 30,000","B/. 10,000 – 30,000"],["B/. 30,000 – 60,000","B/. 30,000 – 60,000"],["B/. 60,000 – 100,000","B/. 60,000 – 100,000"],["Más de B/. 100,000","Más de B/. 100,000"]])}
-    <label class="f" style="margin-top:10px">Otras actividades u otros ingresos</label>${ch("ingresoOtros",[["Ninguno","No tengo otras actividades ni otros ingresos"],...[["Menos de B/. 10,000","Menos de B/. 10,000"],["B/. 10,000 – 30,000","B/. 10,000 – 30,000"],["B/. 30,000 – 60,000","B/. 30,000 – 60,000"],["B/. 60,000 – 100,000","B/. 60,000 – 100,000"],["Más de B/. 100,000","Más de B/. 100,000"]]])}
+    <div class="g2">${sel("ingresoPrincipal","Actividad principal"+(D.ocupacion||D.profesion?" ("+esc(D.ocupacion||D.profesion)+")":""),["Menos de B/. 10,000","B/. 10,000 – 30,000","B/. 30,000 – 60,000","B/. 60,000 – 100,000","Más de B/. 100,000"])}
+    ${sel("ingresoOtros","Otras actividades u otros ingresos",[["Ninguno","No tengo otras actividades ni otros ingresos"],...["Menos de B/. 10,000","B/. 10,000 – 30,000","B/. 30,000 – 60,000","B/. 60,000 – 100,000","Más de B/. 100,000"]])}</div>
     ${D.ingresoOtros&&D.ingresoOtros!=="Ninguno"?inp("otrasActividades","¿Cuál es la otra actividad o fuente de ingreso?",{ph:"Ej.: alquiler de apartamento, ventas, negocio propio"}):""}
     <h3 style="font-size:15px;margin:14px 0 6px">Dos referencias personales <span class="muted" style="font-weight:500">(personas que no vivan con usted)</span></h3>
     <div class="refb"><b>Referencia 1</b><div class="g2">${inp("ref1Nombre","Nombre",{ph:"Ej.: Luis"})}${inp("ref1Apellido","Apellido",{ph:"Ej.: López"})}${inp("ref1Tel","Celular",{type:"tel",im:"tel",ph:"6000-0000"})}${inp("ref1Par","Parentesco o relación",{ph:"Ej.: hermano"})}</div></div>
@@ -92,7 +93,7 @@ function render(){const last=STEPS.length-1;
   $("#app").innerHTML=`<div class="card paso">${STEPS.length>1?`<div class="prog">${PASOS.map((_,i)=>`<i class="${i<=paso?"on":""}"></i>`).join("")}</div><div class="muted" style="margin-bottom:8px">Paso ${paso+1} de ${PASOS.length} · ${PASOS[paso]}</div>`:""}${STEPS[paso][1]()}
     <div class="sv" id="sv"></div><div class="nav">${paso?'<button class="btn sec" data-nav="-1">‹ Atrás</button>':""}<button class="btn" data-nav="1">${paso<last?"Guardar y seguir ›":"✅ Enviar a Panasure"}</button></div></div>`;
 }
-function leerCampos(){document.querySelectorAll("#app input[name],#app textarea[name]").forEach(i=>{D[i.name]=i.value.trim()})}
+function leerCampos(){document.querySelectorAll("#app input[name],#app textarea[name],#app select[name]").forEach(i=>{D[i.name]=i.value.trim()})}
 async function guardar(){leerCampos();D.paso=paso;$("#sv").textContent="Guardando…";const r=await api({accion:"guardar",datos:D});$("#sv").textContent="✓ Guardado";return r}
 document.addEventListener("click",async e=>{
   const c=e.target.closest(".chips[data-k] .chip");if(c){leerCampos();const k=c.parentElement.dataset.k;D[k]=c.dataset.v;render();return}
@@ -111,6 +112,7 @@ async function achicar(f){if(!/^image\//.test(f.type)||f.type==="image/gif")retu
   const c=document.createElement("canvas");c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);c.getContext("2d").drawImage(bmp,0,0,c.width,c.height);
   return await new Promise(r=>c.toBlob(b=>r(b||f),"image/jpeg",.82))}
 const b64=b=>new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(String(x.result).split(",")[1]);x.onerror=j;x.readAsDataURL(b)});
+document.addEventListener("change",e=>{if(e.target.matches("select[data-re]")){leerCampos();const y=scrollY;render();scrollTo(0,y)}});
 document.addEventListener("change",async e=>{const i=e.target.closest("input[data-file]");if(!i||!i.files[0])return;const k=i.dataset.file,box=i.closest("[data-up]"),st=box.querySelector(".st")||box.querySelector("span:last-child");
   try{if(st)st.textContent="Subiendo…";box.style.opacity=.6;leerCampos();
     const f=await achicar(i.files[0]);if(f.size>10*1024*1024)throw new Error("El archivo pesa más de 10 MB");
